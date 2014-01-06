@@ -38,8 +38,9 @@ namespace Mictlanix.Servisim.Client.Tests {
 		const string CSD_PRIVATE_KEY_PWD = "12345678a";
 		const string USERNAME = "1";
 		const string PASSWORD = "atenea1307";
+		const string TOKEN = "BPOUVO07x+Y+ey/W4bbWsLuxymn8icPrDk9rSPpzA3M=";
 
-		static DateTime TEST_DATE = new DateTime (2014, 01, 03, 14, 15, 20, DateTimeKind.Unspecified);
+		static DateTime TEST_DATE = new DateTime (2014, 01, 06, 8, 9, 13, DateTimeKind.Unspecified);
 
 		public TestProgram ()
 		{
@@ -48,7 +49,9 @@ namespace Mictlanix.Servisim.Client.Tests {
 		static void Main (string[] args)
 		{
 			StampTest (USERNAME, PASSWORD);
-//			CancelTest (USERNAME, PASSWORD);
+			// CancelTest (USERNAME, PASSWORD);
+			// GetStampTest (USERNAME, PASSWORD);
+			// AddIssuerTest (USERNAME, PASSWORD, TOKEN);
 		}
 
 		static void StampTest (string username, string password)
@@ -59,7 +62,7 @@ namespace Mictlanix.Servisim.Client.Tests {
 			AddItems (cfd, "Producto", 3);
 			cfd.Sign (File.ReadAllBytes (CSD_PRIVATE_KEY_FILE), Encoding.UTF8.GetBytes (CSD_PRIVATE_KEY_PWD));
 
-			var tfd = cli.Stamp ("WS00000007", cfd);
+			var tfd = cli.Stamp ("WS01", cfd);
 			Console.WriteLine (tfd.ToXmlString ());
 
 			cfd.Complemento = new List<object>();
@@ -69,6 +72,32 @@ namespace Mictlanix.Servisim.Client.Tests {
 			Console.WriteLine (cfd.ToString ());
 		}
 
+		static void CancelTest (string username, string password)
+		{
+			var cli = new ServisimClient (username, password, ServisimClient.URL_TEST);
+			var ret = cli.Cancel ("AAA010101AAA", "9B5E9493-02FB-4CD0-8837-57FF286079B9");
+
+			Console.WriteLine ("Cancel: {0}", ret);
+		}
+
+		static void GetStampTest (string username, string password)
+		{
+			var cli = new ServisimClient (username, password, ServisimClient.URL_TEST);
+			var tfd = cli.GetStamp ("AAA010101AAA", "9B5E9493-02FB-4CD0-8837-57FF286079B9");
+
+			Console.WriteLine (tfd.ToString ());
+			Console.WriteLine (tfd.ToXmlString ());
+		}
+
+		static void AddIssuerTest (string username, string password, string token)
+		{
+			var cli = new ServisimAdminClient (username, password, ServisimAdminClient.URL_TEST, token);
+			var ret = cli.AddIssuer ("AAA010101AAA", File.ReadAllBytes (CSD_CERTIFICATE_FILE),
+				File.ReadAllBytes (CSD_PRIVATE_KEY_FILE), CSD_PRIVATE_KEY_PWD);
+
+			Console.WriteLine ("AddIssuer: {0}", ret);
+		}
+
 		#region Helper Functions
 
 		static Comprobante CreateCFD()
@@ -76,7 +105,7 @@ namespace Mictlanix.Servisim.Client.Tests {
 			var cfd = new Comprobante {
 				tipoDeComprobante = ComprobanteTipoDeComprobante.ingreso,
 				serie = "A",
-				folio = "7",
+				folio = "1",
 				fecha = TEST_DATE,
 				LugarExpedicion = "México, DF",
 				metodoDePago = "Efectivo",

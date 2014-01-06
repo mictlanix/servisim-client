@@ -42,6 +42,15 @@
     <Compile Include="Internals\WsPasswordText.cs" />
     <Compile Include="Internals\TimbrarCFDIResponse.cs" />
     <Compile Include="Internals\ResponseServisim.cs" />
+    <Compile Include="Internals\CancelarCFDI.cs" />
+    <Compile Include="Internals\CancelarCFDIResponse.cs" />
+    <Compile Include="Internals\ObtenerCFDI.cs" />
+    <Compile Include="Internals\ObtenerCFDIResponse.cs" />
+    <Compile Include="Internals\RegistrarEmisor.cs" />
+    <Compile Include="Internals\RegistrarEmisorResponse.cs" />
+    <Compile Include="Internals\RequestAdmin.cs" />
+    <Compile Include="ServisimAdminClient.cs" />
+    <Compile Include="Internals\ResponseAdmin.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CFDLib\Mictlanix.CFDLib.csproj">

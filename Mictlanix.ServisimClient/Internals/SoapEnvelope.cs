@@ -57,6 +57,12 @@ namespace Mictlanix.Servisim.Client.Internals
 		[XmlArray("Body")]
 		[XmlArrayItem(typeof(TimbrarCFDI), Namespace = "http://controller.timbrado.ws.servisim.com/")]
 		[XmlArrayItem(typeof(TimbrarCFDIResponse), Namespace = "http://controller.timbrado.ws.servisim.com/")]
+		[XmlArrayItem(typeof(CancelarCFDI), Namespace = "http://controller.timbrado.ws.servisim.com/")]
+		[XmlArrayItem(typeof(CancelarCFDIResponse), Namespace = "http://controller.timbrado.ws.servisim.com/")]
+		[XmlArrayItem(typeof(ObtenerCFDI), Namespace = "http://controller.timbrado.ws.servisim.com/")]
+		[XmlArrayItem(typeof(ObtenerCFDIResponse), Namespace = "http://controller.timbrado.ws.servisim.com/")]
+		[XmlArrayItem(typeof(RegistrarEmisor), Namespace = "http://controller.distribuidor.ws.servisim.com/")]
+		[XmlArrayItem(typeof(RegistrarEmisorResponse), Namespace = "http://controller.distribuidor.ws.servisim.com/")]
 		[XmlArrayItem(typeof(SoapFault), Namespace = "http://www.w3.org/2003/05/soap-envelope")]
 		public object[] Body {
 			get {
@@ -74,6 +80,7 @@ namespace Mictlanix.Servisim.Client.Internals
 					xmlns = new XmlSerializerNamespaces (new XmlQualifiedName[] {
 						new XmlQualifiedName("soap", "http://www.w3.org/2003/05/soap-envelope"),
 						new XmlQualifiedName("con", "http://controller.timbrado.ws.servisim.com/"),
+						new XmlQualifiedName("dist", "http://controller.distribuidor.ws.servisim.com/"),
 						new XmlQualifiedName("wsse", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd")
 					});
 				}

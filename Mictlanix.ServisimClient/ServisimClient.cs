@@ -120,19 +120,75 @@ namespace Mictlanix.Servisim.Client {
 				throw new ServisimClientException ("Bad response format.");
 			}
 
-			/*
-			if (doc.Body[0] is CancelaCFDIResponse) {
-				var res = doc.Body[0] as CancelaCFDIResponse;
-				return Convert.ToBoolean (res.Return);
+			if (doc.Body[0] is SoapFault) {
+				var fault = doc.Body[0] as SoapFault;
+				throw new ServisimClientException (fault.FaultString);
+			}
+
+			if (!(doc.Body [0] is CancelarCFDIResponse)) {
+				throw new ServisimClientException ("Bad response format.");
+			}
+
+			var res = doc.Body [0] as CancelarCFDIResponse;
+
+			if (res.Response.Code != null) {
+				throw new ServisimClientException (res.Response.Code.Value, res.Response.Error);
+			}
+
+			return string.Compare (res.Response.Uuid, res.Response.Uuid, true) == 0;
+		}
+
+		public TimbreFiscalDigital GetStamp (string issuer, string uuid)
+		{
+			TimbreFiscalDigital tfd = null;
+			var env = CreateEnvelope2 (issuer, uuid);
+			string response = TryRequest (env);
+
+			if (response.Length == 0) {
+				throw new ServisimClientException ("Bad response format.");
+			}
+
+			var doc = SoapEnvelope.FromXml (response);
+
+			if (doc.Body.Length == 0) {
+				throw new ServisimClientException ("Bad response format.");
 			}
 
 			if (doc.Body[0] is SoapFault) {
 				var fault = doc.Body[0] as SoapFault;
-				throw new FiscoClicClientException (fault.FaultString, fault.Detail.Exception);
+				throw new ServisimClientException (fault.FaultString);
 			}
-			*/
 
-			return false;
+			if (!(doc.Body [0] is ObtenerCFDIResponse)) {
+				throw new ServisimClientException ("Bad response format.");
+			}
+
+			var res = doc.Body [0] as ObtenerCFDIResponse;
+
+			if (res.Response.Code != null) {
+				throw new ServisimClientException (res.Response.Code.Value, res.Response.Error);
+			}
+
+			var cfd = Comprobante.FromXml (res.Response.Xml);
+
+			foreach (var item in cfd.Complemento) {
+				if (item is TimbreFiscalDigital) {
+					tfd = item as TimbreFiscalDigital;
+					break;
+				}
+			}
+
+			if (tfd == null) {
+				throw new ServisimClientException ("TimbreFiscalDigital not found.");
+			}
+
+			return new TimbreFiscalDigital {
+				UUID = tfd.UUID,
+				FechaTimbrado = tfd.FechaTimbrado,
+				selloCFD = tfd.selloCFD,
+				noCertificadoSAT = tfd.noCertificadoSAT,
+				selloSAT = tfd.selloSAT
+			};
 		}
 
 		SoapEnvelope CreateEnvelope (string id, Comprobante doc)
@@ -162,14 +218,46 @@ namespace Mictlanix.Servisim.Client {
 		SoapEnvelope CreateEnvelope (string issuer, string uuid)
 		{
 			var request = new SoapEnvelope {
-				/*Body = new CancelaCFDI[] {
-					new CancelaCFDI {
-						uuid = uuid,
-						rfcEmisor = issuer,
-						user = Username,
-						pass = Password
+				Header = new WsSecurity[] {
+					new WsSecurity {
+						UsernameToken = new WsUsernameToken {
+							Username = Username,
+							Password = Password
+						}
 					}
-				}*/
+				},
+				Body = new CancelarCFDI[] {
+					new CancelarCFDI {
+						Request = new RequestServisim {
+							Id = issuer,
+							Xml = uuid
+						}
+					}
+				}
+			};
+
+			return request;
+		}
+
+		SoapEnvelope CreateEnvelope2 (string issuer, string uuid)
+		{
+			var request = new SoapEnvelope {
+				Header = new WsSecurity[] {
+					new WsSecurity {
+						UsernameToken = new WsUsernameToken {
+							Username = Username,
+							Password = Password
+						}
+					}
+				},
+				Body = new ObtenerCFDI[] {
+					new ObtenerCFDI {
+						Request = new RequestServisim {
+							Id = issuer,
+							Xml = uuid
+						}
+					}
+				}
 			};
 
 			return request;
@@ -179,7 +267,7 @@ namespace Mictlanix.Servisim.Client {
 		{
 			var bytes = env.ToXmlBytes ();
 			string response = string.Empty;
-			var dt = DateTime.Now;
+			//var dt = DateTime.Now;
 
 #if DEBUG
 			System.Diagnostics.Debug.WriteLine (env.ToXmlString ());
