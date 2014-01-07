@@ -42,7 +42,7 @@ namespace Mictlanix.Servisim.Client {
 		}
 
 		[XmlAttribute]
-		public string Type { get; private set; }
+		public string Type { get; set; }
 
 		[XmlText]
 		public string Value { get; set; }

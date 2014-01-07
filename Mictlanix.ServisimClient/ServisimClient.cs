@@ -54,8 +54,13 @@ namespace Mictlanix.Servisim.Client {
 
 		public TimbreFiscalDigital Stamp (string id, Comprobante cfd)
 		{
+			return Stamp (id, cfd.ToXmlString ());
+		}
+
+		public TimbreFiscalDigital Stamp (string id, string xml)
+		{
 			TimbreFiscalDigital tfd = null;
-			var env = CreateEnvelope (id, cfd);
+			var env = CreateEnvelope (id, xml);
 			string response = TryRequest (env);
 
 			if (response.Length == 0) {
@@ -83,9 +88,9 @@ namespace Mictlanix.Servisim.Client {
 				throw new ServisimClientException (res.Response.Code.Value, res.Response.Error);
 			}
 
-			cfd = Comprobante.FromXml (res.Response.Xml);
+			var comprobante = Comprobante.FromXml (res.Response.Xml);
 
-			foreach (var item in cfd.Complemento) {
+			foreach (var item in comprobante.Complemento) {
 				if (item is TimbreFiscalDigital) {
 					tfd = item as TimbreFiscalDigital;
 					break;
@@ -107,7 +112,7 @@ namespace Mictlanix.Servisim.Client {
 
 		public bool Cancel (string issuer, string uuid)
 		{
-			var env = CreateEnvelope (issuer, uuid);
+			var env = CreateEnvelope2 (issuer, uuid);
 			string response = TryRequest (env);
 
 			if (response.Length == 0) {
@@ -141,7 +146,7 @@ namespace Mictlanix.Servisim.Client {
 		public TimbreFiscalDigital GetStamp (string issuer, string uuid)
 		{
 			TimbreFiscalDigital tfd = null;
-			var env = CreateEnvelope2 (issuer, uuid);
+			var env = CreateEnvelope3 (issuer, uuid);
 			string response = TryRequest (env);
 
 			if (response.Length == 0) {
@@ -191,7 +196,7 @@ namespace Mictlanix.Servisim.Client {
 			};
 		}
 
-		SoapEnvelope CreateEnvelope (string id, Comprobante doc)
+		SoapEnvelope CreateEnvelope (string id, string xml)
 		{
 			var request = new SoapEnvelope {
 				Header = new WsSecurity[] {
@@ -206,7 +211,7 @@ namespace Mictlanix.Servisim.Client {
 					new TimbrarCFDI {
 						Request = new RequestServisim {
 							Id = id,
-							Xml = doc.ToXmlString (),
+							Xml = xml
 						}
 					}
 				}
@@ -215,7 +220,7 @@ namespace Mictlanix.Servisim.Client {
 			return request;
 		}
 
-		SoapEnvelope CreateEnvelope (string issuer, string uuid)
+		SoapEnvelope CreateEnvelope2 (string issuer, string uuid)
 		{
 			var request = new SoapEnvelope {
 				Header = new WsSecurity[] {
@@ -239,7 +244,7 @@ namespace Mictlanix.Servisim.Client {
 			return request;
 		}
 
-		SoapEnvelope CreateEnvelope2 (string issuer, string uuid)
+		SoapEnvelope CreateEnvelope3 (string issuer, string uuid)
 		{
 			var request = new SoapEnvelope {
 				Header = new WsSecurity[] {

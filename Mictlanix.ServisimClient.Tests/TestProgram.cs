@@ -40,7 +40,7 @@ namespace Mictlanix.Servisim.Client.Tests {
 		const string PASSWORD = "atenea1307";
 		const string TOKEN = "BPOUVO07x+Y+ey/W4bbWsLuxymn8icPrDk9rSPpzA3M=";
 
-		static DateTime TEST_DATE = new DateTime (2014, 01, 06, 8, 9, 13, DateTimeKind.Unspecified);
+		static DateTime TEST_DATE = new DateTime (2014, 01, 06, 8, 9, 14, DateTimeKind.Unspecified);
 
 		public TestProgram ()
 		{
