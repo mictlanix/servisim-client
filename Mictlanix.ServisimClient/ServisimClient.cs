@@ -38,6 +38,9 @@ namespace Mictlanix.Servisim.Client {
 		public static string URL_PRODUCTION = @"http://201.150.37.21/ServisimService/TimbradoCFDi";
 		public static string URL_TEST       = @"http://201.150.37.20:8080/ServisimTest/TimbradoCFDi";
 
+		public event EventHandler<RequestEventArgs> BeginRequest;
+		public event EventHandler<RequestEventArgs> EndRequest;
+
 		public ServisimClient (string username, string password, string url)
 		{
 			Username = username;
@@ -271,32 +274,38 @@ namespace Mictlanix.Servisim.Client {
 		string TryRequest (SoapEnvelope env)
 		{
 			var bytes = env.ToXmlBytes ();
-			string response = string.Empty;
-			//var dt = DateTime.Now;
+			string request = env.ToXmlString ();
+			string response = null;
+			bool is_empty = true;
 
 #if DEBUG
-			System.Diagnostics.Debug.WriteLine (env.ToXmlString ());
+			System.Diagnostics.Debug.WriteLine (request);
 #endif
+			OnBeginRequest (new RequestEventArgs (Url, request));
 
 			try {
 				response = DoPostRequest (Url, bytes);
-			} catch(WebException ex) {
+				is_empty = false;
+			} catch (WebException ex) {
+				var hwr = ex.Response as HttpWebResponse;
 #if DEBUG
 				System.Diagnostics.Debug.WriteLine (ex);
 #endif
-				var hwr = ex.Response as HttpWebResponse;
-				if (hwr != null && hwr.StatusCode == HttpStatusCode.InternalServerError) {
-					using (var sr = new StreamReader(hwr.GetResponseStream())) {
+				if (hwr != null) {
+					using (var sr = new StreamReader (hwr.GetResponseStream ())) {
 						response = sr.ReadToEnd ();
 					}
+
+					is_empty = (hwr.StatusCode != HttpStatusCode.InternalServerError);
 				}
 			}
 
 #if DEBUG
 			System.Diagnostics.Debug.WriteLine (response);
 #endif
+			OnEndRequest (new RequestEventArgs (Url, request, response));
 
-			return response;
+			return is_empty ? string.Empty : response;
 		}
 
 		string DoPostRequest (string url, byte[] data)
@@ -316,6 +325,20 @@ namespace Mictlanix.Servisim.Client {
 						return sr.ReadToEnd ();
 					}
 				}
+			}
+		}
+
+		protected virtual void OnBeginRequest (RequestEventArgs e)
+		{
+			if (BeginRequest != null) {
+				BeginRequest (this, e);
+			}
+		}
+
+		protected virtual void OnEndRequest (RequestEventArgs e)
+		{
+			if (EndRequest != null) {
+				EndRequest (this, e);
 			}
 		}
 	}
