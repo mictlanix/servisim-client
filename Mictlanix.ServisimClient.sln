@@ -1,11 +1,11 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mictlanix.ServisimClient", "Mictlanix.ServisimClient\Mictlanix.ServisimClient.csproj", "{949FABA8-CD56-45EC-A15C-ED327812832F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mictlanix.ServisimClient.Tests", "Mictlanix.ServisimClient.Tests\Mictlanix.ServisimClient.Tests.csproj", "{B40AFC92-609C-4C11-9CFF-7E9D23C342E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mictlanix.CFDLib", "CFDLib\Mictlanix.CFDLib.csproj", "{63EBACD8-7BB0-480F-81BF-5E0690B27112}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mictlanix.CFDLib", "..\CFDLib\Mictlanix.CFDLib.csproj", "{63EBACD8-7BB0-480F-81BF-5E0690B27112}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

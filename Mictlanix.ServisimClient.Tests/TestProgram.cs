@@ -48,7 +48,7 @@ namespace Mictlanix.Servisim.Client.Tests {
 
 		static void Main (string[] args)
 		{
-			StampTest (USERNAME, PASSWORD);
+			// StampTest (USERNAME, PASSWORD);
 			// CancelTest (USERNAME, PASSWORD);
 			// GetStampTest (USERNAME, PASSWORD);
 			// AddIssuerTest (USERNAME, PASSWORD, TOKEN);
