@@ -314,6 +314,7 @@ namespace Mictlanix.Servisim.Client {
 			req.ContentType = "text/xml; charset=utf-8";
 			req.Method = "POST";
 			req.ContentLength = data.Length;
+			req.Timeout = 1000 * 300;
 
 			using (var stream = req.GetRequestStream ()) {
 				stream.Write (data, 0, data.Length);
