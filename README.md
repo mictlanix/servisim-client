@@ -1,4 +1,2 @@
-servisim-client
-===============
-
-C# client library for Servisim web services.
+# Mictlanix Servisim Client
+.NET client library for Servisim web services.
