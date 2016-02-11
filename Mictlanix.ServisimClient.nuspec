@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+	<metadata>
+		<id>Mictlanix.ServisimClient</id>
+		<version>0.1.0</version>
+		<title>Mictlanix Servisim Client</title>
+		<authors>Eddy Zavaleta, Mictlanix, and contributors</authors>
+		<owners/>
+		<licenseUrl>https://github.com/mictlanix/servisim-client/blob/master/LICENSE</licenseUrl>
+		<projectUrl>https://github.com/mictlanix/servisim-client</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>.NET client library for Servisim web services (www.servisim.com.mx)</description>
+		<releaseNotes>First public release.</releaseNotes>
+		<copyright>Copyright 2016</copyright>
+		<tags>cfdi factura invoice web services api client library .net</tags>
+		<dependencies>
+			<dependency id="Mictlanix.CFDLib" version="0.1.0" />
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="src/Mictlanix.ServisimClient/bin/Release/Mictlanix.ServisimClient.dll" target="lib\net45" />
+	</files>
+</package>
